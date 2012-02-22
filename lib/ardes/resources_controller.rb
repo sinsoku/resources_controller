@@ -383,7 +383,7 @@ module Ardes#:nodoc:
     
     def self.extended(base)
       base.class_eval do
-        class_inheritable_reader :resource_specification_map
+        class_attribute :resource_specification_map
         write_inheritable_attribute(:resource_specification_map, {})
       end
     end
@@ -453,7 +453,7 @@ module Ardes#:nodoc:
       when_options = {:only => options.delete(:only), :except => options.delete(:except)}
       
       unless included_modules.include? ResourcesController::InstanceMethods
-        class_inheritable_reader :specifications, :route_name
+        class_attribute :specifications, :route_name
         hide_action :specifications, :route_name
         extend  ResourcesController::ClassMethods
         helper  ResourcesController::Helper
