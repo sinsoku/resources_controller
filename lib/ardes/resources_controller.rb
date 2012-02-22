@@ -384,7 +384,7 @@ module Ardes#:nodoc:
     def self.extended(base)
       base.class_eval do
         class_attribute :resource_specification_map
-        write_inheritable_attribute(:resource_specification_map, {})
+        self.resource_specification_map = {}
       end
     end
     
@@ -463,7 +463,8 @@ module Ardes#:nodoc:
 
       before_filter(:load_enclosing_resources, when_options.dup) unless load_enclosing_resources_filter_exists?
       
-      write_inheritable_attribute(:specifications, [])
+      class_attribute :specifications
+      self.specifications = []
       specifications << '*' unless options.delete(:load_enclosing) == false
       
       unless (actions = options.delete(:actions)) == false
@@ -473,11 +474,13 @@ module Ardes#:nodoc:
       
       route = (options.delete(:route) || name).to_s
       name = options[:singleton] ? name.to_s : name.to_s.singularize
-      write_inheritable_attribute :route_name, options[:singleton] ? route : route.singularize
+      class_attribute :route_name
+      self.route_name = options[:singleton] ? route : route.singularize
       
       nested_in(*options.delete(:in)) if options[:in]
       
-      write_inheritable_attribute(:resource_specification, Specification.new(name, options, &block))
+      class_attribute :resource_specification
+      self.resource_specification = Specification.new(name, options, &block)
     end
     
     # Creates a resource specification mapping.  Use this to specify how to find an enclosing resource that
